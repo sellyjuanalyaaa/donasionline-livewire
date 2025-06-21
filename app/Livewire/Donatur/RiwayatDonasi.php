@@ -15,7 +15,6 @@ class RiwayatDonasi extends Component
 
     public function render()
     {
-        // Ambil donasi HANYA untuk donatur yang sedang login
         $donasis = Donasi::where('donatur_id', Auth::guard('donatur')->id())
                         ->with('kampanye')
                         ->latest()

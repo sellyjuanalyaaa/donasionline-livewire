@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Kampanye;
-use App\Models\Kategori; // 1. Tambahkan model Kategori
+use App\Models\Kategori; 
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -19,19 +19,19 @@ class KampanyeIndex extends Component
     public $judul = '', $deskripsi = '', $target_donasi = '', $tanggal_mulai = '', $tanggal_selesai = '';
     public $status = 'aktif';
     public $gambar = null;
-    public $kategori_id = ''; // 2. Tambahkan properti untuk kategori
+    public $kategori_id = ''; 
 
     // Properti untuk state CRUD
     public $editId = null;
     public $existingGambar = null;
     public $search = '';
-    public $filterKategori = ''; // 3. Tambahkan properti untuk filter
+    public $filterKategori = ''; 
 
     public function rules()
     {
         return [
             'judul' => 'required|string|min:5',
-            'kategori_id' => 'required|exists:kategoris,id', // 4. Tambahkan validasi
+            'kategori_id' => 'required|exists:kategoris,id',
             'deskripsi' => 'required|string|min:20',
             'target_donasi' => 'required|numeric|min:10000',
             'tanggal_mulai' => 'required|date',
@@ -50,7 +50,6 @@ class KampanyeIndex extends Component
             $gambarPath = $this->gambar->store('kampanye-images', 'public');
         }
 
-        // 5. Sertakan kategori_id saat menyimpan
         $data = [
             'judul' => $this->judul,
             'kategori_id' => $this->kategori_id,
@@ -78,7 +77,7 @@ class KampanyeIndex extends Component
         $kampanye = Kampanye::findOrFail($id);
         $this->editId = $kampanye->id;
         $this->judul = $kampanye->judul;
-        $this->kategori_id = $kampanye->kategori_id; // 6. Isi kategori saat edit
+        $this->kategori_id = $kampanye->kategori_id; 
         $this->deskripsi = $kampanye->deskripsi;
         $this->target_donasi = $kampanye->target_donasi;
         $this->tanggal_mulai = $kampanye->tanggal_mulai->format('Y-m-d');
@@ -117,7 +116,7 @@ class KampanyeIndex extends Component
 
         return view('livewire.kampanye-index', [
             'kampanyes' => $kampanyes,
-            'kategoris' => Kategori::all(), // 8. Kirim daftar kategori ke view
+            'kategoris' => Kategori::all(), 
         ]);
     }
 }

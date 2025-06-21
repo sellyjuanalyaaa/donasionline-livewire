@@ -12,16 +12,12 @@ class DonaturLogin extends Component
 {
     public DonaturLoginForm $form;
 
-    /**
-     * Menangani permintaan login.
-     */
     public function login(): void
     {
         $this->form->authenticate();
 
         Session::regenerate();
 
-        // PERBAIKAN: Arahkan ke route 'donatur.dashboard'
         $this->redirect(
             url: route('donatur.dashboard', absolute: false),
             navigate: true

@@ -44,7 +44,7 @@ return [
     'donatur' => [
             'driver' => 'session',
             'provider' => 'donaturs',
-        ],
+        ]
     ],
 
     /*

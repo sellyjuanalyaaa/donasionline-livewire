@@ -14,15 +14,11 @@ class TransaksiDonasiIndex extends Component
 
     public $search = '';
 
-    /**
-     * Merender view dan mengirimkan data transaksi.
-     */
     public function render()
     {
         // Mulai dengan query dasar untuk mengambil semua transaksi beserta relasinya.
         $query = TransaksiDonasi::with(['donatur', 'kampanye']);
 
-        // Terapkan filter pencarian HANYA JIKA ada input dari pengguna.
         $query->when($this->search, function ($q) {
             return $q->whereHas('donatur', function ($subQuery) {
                 $subQuery->where('nama', 'like', '%' . $this->search . '%');
@@ -32,7 +28,6 @@ class TransaksiDonasiIndex extends Component
             });
         });
 
-        // Ambil hasil akhir, urutkan dari yang terbaru, dan berikan paginasi.
         $transaksis = $query->latest()->paginate(15);
 
         return view('livewire.transaksi-donasi-index', [

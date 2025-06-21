@@ -18,7 +18,6 @@ class DonaturRegister extends Component
     #[Rule('required|string|email|max:255|unique:donaturs,email')]
     public $email = '';
 
-    // PERBAIKAN: Tambahkan properti dan aturan untuk telepon
     #[Rule('required|numeric|min_digits:10')]
     public $telepon = '';
 
@@ -31,7 +30,6 @@ class DonaturRegister extends Component
     {
         $validatedData = $this->validate();
 
-        // PERBAIKAN: Sertakan 'telepon' saat membuat donatur baru
         $donatur = Donatur::create([
             'nama' => $validatedData['nama'],
             'email' => $validatedData['email'],
@@ -39,10 +37,8 @@ class DonaturRegister extends Component
             'password' => Hash::make($validatedData['password']),
         ]);
 
-        // Login donatur yang baru dibuat menggunakan guard 'donatur'
         Auth::guard('donatur')->login($donatur);
 
-        // Arahkan ke dashboard donatur
         return $this->redirect(route('donatur.dashboard'), navigate: true);
     }
 

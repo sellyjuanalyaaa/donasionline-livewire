@@ -24,10 +24,9 @@
                 <div class="lg:col-span-1">
                     {{-- DIUBAH: Styling kartu form --}}
                     <div class="bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 rounded-2xl p-6">
-                        <form wire:submit="save">
+                        <form>
                             <h3 class="text-xl font-bold text-slate-800 dark:text-slate-100 mb-6">{{ $editId ? 'Edit Kampanye' : 'Tambah Kampanye Baru' }}</h3>
                             <div class="space-y-5">
-                                {{-- DIUBAH: Styling semua form input --}}
                                 <div>
                                     <label for="judul" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Judul Kampanye</label>
                                     <input type="text" wire:model="judul" id="judul" class="mt-1 block w-full bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-teal-500 focus:ring-teal-500">
@@ -50,11 +49,62 @@
                                     <textarea wire:model="deskripsi" id="deskripsi" rows="4" class="mt-1 block w-full bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-teal-500 focus:ring-teal-500"></textarea>
                                     @error('deskripsi') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
                                 </div>
-                                {{-- ... Tambahkan input form lainnya di sini dengan styling yang sama ... --}}
+                                {{-- Target Donasi --}}
+<div>
+    <label for="target_donasi" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Target Donasi</label>
+    <input type="number" wire:model="target_donasi" id="target_donasi" class="mt-1 block w-full bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-teal-500 focus:ring-teal-500">
+    @error('target_donasi') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+</div>
+
+{{-- Tanggal Mulai --}}
+<div>
+    <label for="tanggal_mulai" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Tanggal Mulai</label>
+    <input type="date" wire:model="tanggal_mulai" id="tanggal_mulai" class="mt-1 block w-full bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-teal-500 focus:ring-teal-500">
+    @error('tanggal_mulai') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+</div>
+
+{{-- Tanggal Selesai --}}
+<div>
+    <label for="tanggal_selesai" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Tanggal Selesai</label>
+    <input type="date" wire:model="tanggal_selesai" id="tanggal_selesai" class="mt-1 block w-full bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-teal-500 focus:ring-teal-500">
+    @error('tanggal_selesai') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+</div>
+
+{{-- Status --}}
+<div>
+    <label for="status" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
+    <select wire:model="status" id="status" class="mt-1 block w-full bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm focus:border-teal-500 focus:ring-teal-500">
+        <option value="aktif">Aktif</option>
+        <option value="selesai">Selesai</option>
+        <option value="ditutup">Ditutup</option>
+    </select>
+    @error('status') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+</div>
+
+                                <div>
+                                    <label for="gambar" class="block text-sm font-medium text-slate-700 dark:text-slate-300">Gambar Kampanye</label>
+                                    <input type="file" wire:model="gambar" id="gambar" class="mt-1 block w-full text-sm text-slate-500
+                                        file:mr-4 file:py-2 file:px-4
+                                        file:rounded-full file:border-0
+                                        file:text-sm file:font-semibold
+                                        file:bg-teal-50 file:text-teal-700
+                                        hover:file:bg-teal-100
+                                    "/>
+                                    <div wire:loading wire:target="gambar" class="text-sm text-slate-500 mt-1">Mengunggah...</div>
+                                    @error('gambar') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+
+                                    {{-- Pratinjau Gambar --}}
+                                    @if ($gambar)
+                                        <p class="text-xs text-slate-500 mt-2">Pratinjau Gambar Baru:</p>
+                                        <img src="{{ $gambar->temporaryUrl() }}" class="mt-2 rounded-lg object-cover h-24 w-full">
+                                    @elseif ($existingGambar)
+                                        <p class="text-xs text-slate-500 mt-2">Gambar Saat Ini:</p>
+                                        <img src="{{ asset('storage/' . $existingGambar) }}" class="mt-2 rounded-lg object-cover h-24 w-full">
+                                    @endif
+                                </div>
                             </div>
                             <div class="mt-6 flex items-center space-x-4">
-                                {{-- DIUBAH: Styling tombol aksi --}}
-                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-teal-600 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-teal-700 transition">
+                                <button wire:click.prevent="save()" type="button" class="inline-flex items-center justify-center px-4 py-2 bg-teal-600 border border-transparent rounded-lg font-semibold text-sm text-white hover:bg-teal-700 transition">
                                     <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M7.5 3.75A1.75 1.75 0 0 0 5.75 5.5v8.01A1.75 1.75 0 0 0 7.5 15.26V17.25a.75.75 0 0 0 1.5 0v-2.013a1.75 1.75 0 0 0 1.75-1.737V5.5A1.75 1.75 0 0 0 9 3.75H7.5Z" /></svg>
                                     {{ $editId ? 'Update Kampanye' : 'Simpan Kampanye' }}
                                 </button>

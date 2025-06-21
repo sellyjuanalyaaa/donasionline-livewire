@@ -4,60 +4,78 @@ namespace App\Livewire;
 
 use App\Models\Kampanye;
 use App\Models\Kategori;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
-use Livewire\WithFileUploads; // <-- Penting untuk upload file
+use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Rule;
 
 #[Layout('layouts.app')]
 class KampanyeForm extends Component
 {
-    use WithFileUploads; // <-- Aktifkan fitur upload file
+    use WithFileUploads;
 
-   // Properti untuk data form
-    #[Rule('required|string|min:5')]
-    public $judul = '';
+    // Properti untuk menampung data
+    public Kampanye $kampanye;
+    public $gambar;
+    public $existingGambar;
 
-    #[Rule('required|string|min:20')]
-    public $deskripsi = '';
+    // Menandakan mode edit
+    public bool $isEditMode = false;
 
-    #[Rule('required|numeric|min:10000')]
-    public $target_donasi;
+    /**
+     * Mount hook untuk menangani mode edit atau create.
+     * Laravel akan otomatis menyuntikkan model Kampanye jika ada di URL.
+     */
+    public function mount(Kampanye $kampanye)
+    {
+        if ($kampanye->exists) {
+            $this->kampanye = $kampanye;
+            $this->isEditMode = true;
+            $this->existingGambar = $kampanye->gambar;
+        } else {
+            // Inisialisasi model kosong untuk form tambah baru
+            $this->kampanye = new Kampanye([
+                'status' => 'aktif', // Nilai default
+                'tanggal_mulai' => now()->format('Y-m-d'),
+            ]);
+        }
+    }
 
-    #[Rule('required|date')]
-    public $tanggal_mulai;
-    
-    #[Rule('required|date|after_or_equal:tanggal_mulai')]
-    public $tanggal_selesai;
+    protected function rules()
+    {
+        return [
+            'kampanye.judul' => 'required|string|min:5',
+            'kampanye.kategori_id' => 'required|exists:kategoris,id',
+            'kampanye.deskripsi' => 'required|string|min:20',
+            'kampanye.target_donasi' => 'required|numeric|min:10000',
+            'kampanye.tanggal_mulai' => 'required|date',
+            'kampanye.tanggal_selesai' => 'required|date|after_or_equal:kampanye.tanggal_mulai',
+            'kampanye.status' => 'required|in:aktif,selesai,ditutup',
+            'gambar' => $this->isEditMode ? 'nullable|image|max:2048' : 'required|image|max:2048',
+        ];
+    }
 
-    #[Rule('nullable|image|max:2048')]
-    public $gambar = null; // <-- PERBAIKAN DILAKUKAN DI SINI
-
-    // Method untuk menyimpan data
     public function save()
     {
         $this->validate();
 
-        $gambarPath = null;
         if ($this->gambar) {
-            $gambarPath = $this->gambar->store('kampanye-images', 'public');
+            if ($this->isEditMode && $this->existingGambar) {
+                Storage::disk('public')->delete($this->existingGambar);
+            }
+            $this->kampanye->gambar = $this->gambar->store('kampanye-images', 'public');
         }
+        
+        $this->kampanye->save();
 
-        Kampanye::create([
-            'judul' => $this->judul,
-            'deskripsi' => $this->deskripsi,
-            'target_donasi' => $this->target_donasi,
-            'tanggal_mulai' => $this->tanggal_mulai,
-            'tanggal_selesai' => $this->tanggal_selesai,
-            'gambar' => $gambarPath,
-        ]);
-
-        session()->flash('success', 'Kampanye baru berhasil dibuat.');
-        return $this->redirect('/kampanye', navigate: true); 
+        session()->flash('success', $this->isEditMode ? 'Kampanye berhasil diperbarui.' : 'Kampanye baru berhasil ditambahkan.');
+        return $this->redirect(route('admin.kampanye.index'), navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.kampanye-form');
+        return view('livewire.kampanye-form', [
+            'kategoris' => Kategori::all()
+        ]);
     }
 }

@@ -21,22 +21,16 @@ class DonaturCreate extends Component
     #[Rule('required|string|min:8')]
     public $password = '';
 
-    // PERBAIKAN: Pastikan nama properti ini adalah 'telepon'
     #[Rule('nullable|numeric')]
     public $telepon = '';
 
     #[Rule('nullable|string')]
     public $alamat = '';
 
-    /**
-     * Method ini akan dipanggil saat form disubmit.
-     */
     public function save()
     {
-        // Validasi input sesuai aturan di atas
         $this->validate();
 
-        // Buat data donatur baru di database
         Donatur::create([
             'nama' => $this->nama,
             'email' => $this->email,

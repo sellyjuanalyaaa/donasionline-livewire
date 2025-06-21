@@ -17,29 +17,26 @@ class Dashboard extends Component
     public $namaDonatur;
     public $totalDonasi;
     public $jumlahTransaksi;
-    public $recentDonations; // Properti untuk menyimpan donasi terkini
+    public $recentDonations; 
 
-    // Properti untuk filter dan pencarian
     public $filterKategori = ''; 
     public $search = '';
 
     public function mount()
     {
+        
         $donatur = Auth::guard('donatur')->user();
         $this->namaDonatur = $donatur->nama;
         $this->totalDonasi = $donatur->donasis()->sum('jumlah');
         $this->jumlahTransaksi = $donatur->donasis()->count();
-
-        // Ambil 3 donasi terakhir dari pengguna ini
         $this->recentDonations = $donatur->donasis()->with('kampanye')->latest()->take(3)->get();
     }
 
     public function render()
     {
-        // Ambil data kampanye dengan logika filter dan pencarian
         $kampanyes = Kampanye::where('status', 'aktif')
                             ->withSum('donasis as terkumpul', 'jumlah')
-                            ->withCount('donasis as jumlah_pendonasi') // Menghitung jumlah donatur
+                            ->withCount('donasis as jumlah_pendonasi') 
                             ->when($this->filterKategori, function ($query) {
                                 $query->where('kategori_id', $this->filterKategori);
                             })

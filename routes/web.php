@@ -12,18 +12,14 @@ use App\Livewire\Donatur\RiwayatDonasi;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\KategoriIndex;
 use App\Livewire\DonasiIndex;
+use App\Livewire\DonaturCreate;
 use App\Livewire\DonaturIndex;
+use App\Livewire\KampanyeForm;
 use App\Livewire\KampanyeIndex;
 use App\Livewire\TransaksiDonasiIndex;
 
 
-/*
-|--------------------------------------------------------------------------
-| RUTE WEB APLIKASI
-|--------------------------------------------------------------------------
-*/
 
-// --- RUTE PUBLIK ---
 // Route::get('/', WelcomePage::class)->name('welcome');
 Route::get('/donatur/login', DonaturLogin::class)->name('donatur.login');
 Route::get('/donatur/register', DonaturRegister::class)->name('donatur.register');
@@ -43,11 +39,16 @@ Route::prefix('admin')->middleware('auth:web')->name('admin.')->group(function (
     // Rute manajemen CRUD
     Route::get('/kategori', KategoriIndex::class)->name('kategori.index');
     Route::get('/donasi', DonasiIndex::class)->name('donasi.index');
+        Route::get('/donatur/create', DonaturCreate::class)->name('donatur.create');
+
     Route::get('/donatur', DonaturIndex::class)->name('donatur.index');
     Route::get('/kampanye', KampanyeIndex::class)->name('kampanye.index');
+        Route::get('/kampanye/create', KampanyeForm::class)->name('kampanye.create');
+    Route::get('/kampanye/{kampanye}/edit', KampanyeForm::class)->name('kampanye.edit');
+
     Route::get('/transaksi', TransaksiDonasiIndex::class)->name('transaksi.index');
 
-    // PERBAIKAN: Pindahkan rute profile ke dalam grup admin
+
     Route::view('/profile', 'profile')->name('profile');
 });
 

@@ -15,22 +15,12 @@ class DonasiIndex extends Component
 
     public $totalSeluruhDonasi;
 
-    /**
-     * Menghitung total seluruh donasi saat komponen dimuat.
-     */
     public function mount()
     {
         $this->totalSeluruhDonasi = Donasi::sum('jumlah');
     }
-
-    /**
-     * Merender view dengan data ringkasan per kampanye.
-     */
     public function render()
     {
-        // Ambil data kampanye beserta:
-        // 1. Total donasi terkumpul (dengan alias 'terkumpul')
-        // 2. Jumlah transaksi donasi yang masuk
         $kampanyes = Kampanye::withSum('donasis as terkumpul', 'jumlah')
                             ->withCount('donasis as jumlah_transaksi')
                             ->latest()

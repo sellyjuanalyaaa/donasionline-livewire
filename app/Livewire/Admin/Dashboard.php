@@ -5,7 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\Donasi;
 use App\Models\Kampanye;
 use App\Models\Donatur;
-use App\Models\Kategori; // 1. Tambahkan model Kategori
+use App\Models\Kategori;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
@@ -15,17 +15,14 @@ class Dashboard extends Component
     public $totalKampanye;
     public $totalDonatur;
     public $totalDonasiTerkumpul;
-    public $totalKategori; // 2. Tambahkan properti baru
+    public $totalKategori; 
 
-    /**
-     * Mount hook untuk menginisialisasi data statistik.
-     */
     public function mount()
     {
         $this->totalKampanye = Kampanye::count();
         $this->totalDonatur = Donatur::count();
         $this->totalDonasiTerkumpul = Donasi::sum('jumlah');
-        $this->totalKategori = Kategori::count(); // 3. Hitung jumlah kategori
+        $this->totalKategori = Kategori::count(); 
     }
 
     public function render()
