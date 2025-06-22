@@ -10,9 +10,6 @@ class Donasi extends Model
 {
     use HasFactory;
 
-    /**
-     * Tentukan kolom yang boleh diisi (Mass Assignable).
-     */
     protected $fillable = [
         'donatur_id',
         'kampanye_id',
@@ -20,17 +17,11 @@ class Donasi extends Model
         'tanggal',
     ];
 
-    /**
-     * Relasi: Satu Donasi dimiliki oleh satu Donatur.
-     */
     public function donatur(): BelongsTo
     {
         return $this->belongsTo(Donatur::class);
     }
 
-    /**
-     * Relasi: Satu Donasi dimiliki oleh satu Kampanye.
-     */
     public function kampanye(): BelongsTo
     {
         return $this->belongsTo(Kampanye::class);

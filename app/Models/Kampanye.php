@@ -27,18 +27,11 @@ class Kampanye extends Model
         return $this->belongsTo(Kategori::class);
     }
 
-    /**
-     * PERBAIKAN: Ubah relasi ini agar menunjuk ke model TransaksiDonasi.
-     * Sekarang, setiap kali Anda memanggil $kampanye->donasis(), 
-     * ia akan mengambil data dari tabel 'transaksi_donasis'.
-     */
     public function donasis(): HasMany
     {
         return $this->hasMany(TransaksiDonasi::class);
     }
 
-    // Accessor untuk progres tidak perlu diubah, karena ia akan otomatis
-    // menggunakan relasi donasis() yang sudah kita perbaiki di atas.
     public function getProgresAttribute(): int
     {
         if ($this->target_donasi > 0) {

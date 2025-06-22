@@ -11,12 +11,10 @@ class TransaksiDonasi extends Model
     use HasFactory;
 
     protected $fillable = [
-        // 'kode_transaksi',
         'donatur_id',
         'kampanye_id',
         'jumlah',
         'status',
-        // 'metode_pembayaran',
     ];
 
     public function donatur(): BelongsTo
